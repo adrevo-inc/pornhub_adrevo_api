@@ -1,0 +1,10 @@
+/.env
+/log/*
+/.bundle
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+/tmp
+/vendor/*
+/public/assets/*
+/config/secret.yml
