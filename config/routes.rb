@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   root 'top#index'
 
   get 'scrape/:channel/:label' => 'scrape#index'
-  get 'scrape/get_video_list' => 'scrape#get_video_list'
+  get 'scrape/get_video_list'  => 'scrape#get_video_list'
+
+  get 'scrape/list_channels' => 'scrape#list_channels'
+  get 'scrape/list_videos'   => 'scrape#list_videos'
 
   get 'sct' => 'etc#sct'
 
