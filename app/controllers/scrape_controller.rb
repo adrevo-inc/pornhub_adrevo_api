@@ -82,6 +82,36 @@ class ScrapeController < ApplicationController
     end
   end
 
+  def get_video_keys
+    agent = Mechanize.new
+    login(agent)
+
+    @json_h = params.slice(:channel)
+    channel_name = params[:channel]
+    @json_h["video_keys"] = []
+
+    url = "#{CONFIG['domain']}/channels/#{channel_name}/videos"
+    while true do
+
+      contents = get_contents(agent, url)
+      contents.search("div[@class='widgetContainer']").search('li').each do |content|
+        @json_h["video_keys"] = (@json_h["video_keys"] << content.attribute("_vkey").value)
+      end
+
+      next_page = contents.search("link[@rel='next']").attribute('href')
+      if next_page then
+        url = next_page.value
+      else
+        break
+      end
+    end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @json_h }
+    end
+  end
+
   def list_channels
     @channels = Channel.all
   end
