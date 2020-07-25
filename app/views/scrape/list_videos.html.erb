@@ -1,0 +1,39 @@
+<h1>Video data list</h1>
+<table border="1" style="border-collapse: collapse">
+  <tr>
+    <th>ID</th>
+    <th>created_at</th>
+    <th>video id</th>
+    <th>title</th>
+    <th>publish_date</th>
+    <th>views</th>
+    <th>duration</th>
+    <th>good voted ratio</th>
+    <th># of votes</th>
+    <th>tags</th>
+    <th>categories</th>
+    <th>pornstars</th>
+    <th>url</th>
+    <th>default_thumb</th>
+    <th>thumb</th>
+  </tr>
+  <% @videos.each do |c| %>
+    <tr>
+      <td><%= c.id %></td>
+      <td><%= c.created_at.strftime('%Y/%m/%d %H:%M') %></td>
+      <td><%= c.video_id      %></td>
+      <td><%= c.title         %></td>
+      <td><%= c.publish_date.strftime('%Y/%m/%d %H:%M') %></td>
+      <td><%= c.views         %></td>
+      <td><%= c.duration      %></td>
+      <td><%= c.rating        %></td>
+      <td><%= c.ratings       %></td>
+      <td><%= c.tags          %></td>
+      <td><%= c.categories    %></td>
+      <td><%= c.pornstars     %></td>
+      <td><%= c.url           %></td>
+      <td><%= c.default_thumb %></td>
+      <td><%= c.thumb         %></td>
+    </tr>
+  <% end %>
+</table>

@@ -1,4 +1,4 @@
-# Rails API
+# AdRevo Pornhub API
 
 ## 用途
 適当にrailsで処理したいとき用
