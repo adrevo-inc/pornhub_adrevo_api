@@ -86,23 +86,26 @@ class ScrapeController < ApplicationController
     agent = Mechanize.new
     login(agent)
 
-    @json_h = params.slice(:channel)
-    channel_name = params[:channel]
-    @json_h["video_keys"] = []
+    @json_h = {}
 
-    url = "#{CONFIG['domain']}/channels/#{channel_name}/videos"
-    while true do
+    params["channel"].split(?,).each do |e|
+      if e.present?
+        @json_h[e] = []
 
-      contents = get_contents(agent, url)
-      contents.search("div[@class='widgetContainer']").search('li').each do |content|
-        @json_h["video_keys"] = (@json_h["video_keys"] << content.attribute("_vkey").value)
-      end
+        url = "#{CONFIG['domain']}/channels/#{e}/videos"
+        while true do
+          contents = get_contents(agent, url)
+          contents.search("div[@class='widgetContainer']").search('li').each do |content|
+            @json_h[e] = (@json_h[e] << content.attribute("_vkey").value)
+          end
 
-      next_page = contents.search("link[@rel='next']").attribute('href')
-      if next_page then
-        url = next_page.value
-      else
-        break
+          next_page = contents.search("link[@rel='next']").attribute('href')
+          if next_page then
+            url = next_page.value
+          else
+            break
+          end
+        end
       end
     end
 

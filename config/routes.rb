@@ -4,8 +4,8 @@ Rails.application.routes.draw do
 
   get 'scrape/:channel/:label' => 'scrape#index'
 
-  get 'scrape/get_video_list'          => 'scrape#get_video_list'
-  get 'scrape/get_video_keys/:channel' => 'scrape#get_video_keys'
+  get 'scrape/get_video_list' => 'scrape#get_video_list'
+  get 'scrape/get_video_keys' => 'scrape#get_video_keys'
 
   get 'scrape/list_channels' => 'scrape#list_channels'
   get 'scrape/list_videos'   => 'scrape#list_videos'
