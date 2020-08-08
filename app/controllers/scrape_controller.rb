@@ -116,11 +116,21 @@ class ScrapeController < ApplicationController
   end
 
   def list_channels
-    @channels = Channel.all
+    logger.debug params["date"]
+    @channels = params["date"].present? ? Channel.where("date(created_at) = '"+params["date"]+"'") : Channel.all
+    respond_to do |format|
+      format.html
+      format.json { render json: @channels }
+    end
   end
 
   def list_videos
-    @videos = Video.all
+    logger.debug params["date"]
+    @videos = params["date"].present? ? Video.where("date(created_at) = '"+params["date"]+"'") : Video.all
+    respond_to do |format|
+      format.html
+      format.json { render json: @videos }
+    end
   end
 
   private

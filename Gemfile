@@ -25,3 +25,4 @@ gem 'listen'
 
 #2020/4 scrape
 gem 'mechanize'
+gem 'whenever'
