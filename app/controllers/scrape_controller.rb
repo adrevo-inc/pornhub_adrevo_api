@@ -57,20 +57,7 @@ class ScrapeController < ApplicationController
     params["key"].split(?,).each do |e|
       views = ''
       if e.present?
-        contents = get_contents(agent, "#{CONFIG['domain']}/webmasters/video_by_id?id=#{e}")
-	json = JSON.parse(contents.content)
-
-	if json.has_key?('video')
-	  v = json['video']
-	  p = v.slice('video_id', 'views', 'duration', 'rating', 'ratings', 'title', 'url', 'default_thumb', 'thumb', 'publish_date')
-	  p['tags'] = v.has_key?('tags') ? v['tags'].map{ |i| i['tag_name'] }.join(',') : ''
-	  p['pornstars'] = v.has_key?('pornstars') ? v['pornstars'].map{ |i| i['pornstar_name'] }.join(',') : ''
-	  p['categories'] = v.has_key?('categories') ? v['categories'].map{ |i| i['category'] }.join(',') : ''
-	  @video = Video.new(p)
-	  @video.save
-
-	  views = v['views'] || ''
-	end
+        views = fetch_video_data(agent, e)
       end
       @json_h["view"] = (@json_h["view"] << views)
     end
@@ -87,25 +74,31 @@ class ScrapeController < ApplicationController
     login(agent)
 
     @json_h = {}
-
     params["channel"].split(?,).each do |e|
       if e.present?
-        @json_h[e] = []
+        @json_h[e] = fetch_video_keys(agent, e)
+      end
+    end
 
-        url = "#{CONFIG['domain']}/channels/#{e}/videos"
-        while true do
-          contents = get_contents(agent, url)
-          contents.search("div[@class='widgetContainer']").search('li').each do |content|
-            @json_h[e] = (@json_h[e] << content.attribute("_vkey").value)
-          end
+    respond_to do |format|
+      format.html
+      format.json { render json: @json_h }
+    end
+  end
 
-          next_page = contents.search("link[@rel='next']").attribute('href')
-          if next_page then
-            url = next_page.value
-          else
-            break
-          end
+  def get_all_video_list
+    agent = Mechanize.new
+    login(agent)
+
+    @json_h = {}
+    params["channel"].split(?,).each do |c|
+      if c.present?
+        keys = fetch_video_keys(agent, c)
+        vdata = {}
+        keys.each do |k|
+          vdata[k] = fetch_video_data(agent, k)
         end
+        @json_h[c] = vdata
       end
     end
 
@@ -162,4 +155,42 @@ class ScrapeController < ApplicationController
       p.permit(*columns)
     end
 
+    def fetch_video_keys(agent, channel)
+      keys = []
+
+      url = "#{CONFIG['domain']}/channels/#{channel}/videos"
+      while true do
+        contents = get_contents(agent, url)
+        contents.search("div[@class='widgetContainer']").search('li').each do |content|
+          keys = (keys << content.attribute("_vkey").value)
+        end
+
+        next_page = contents.search("link[@rel='next']").attribute('href')
+        if next_page then
+          url = next_page.value
+        else
+          break
+        end
+      end
+      return keys
+    end
+
+    def fetch_video_data(agent, key)
+      views = ''
+      contents = get_contents(agent, "#{CONFIG['domain']}/webmasters/video_by_id?id=#{key}")
+      json = JSON.parse(contents.content)
+
+      if json.has_key?('video')
+        v = json['video']
+        p = v.slice('video_id', 'views', 'duration', 'rating', 'ratings', 'title', 'url', 'default_thumb', 'thumb', 'publish_date')
+        p['tags'] = v.has_key?('tags') ? v['tags'].map{ |i| i['tag_name'] }.join(',') : ''
+        p['pornstars'] = v.has_key?('pornstars') ? v['pornstars'].map{ |i| i['pornstar_name'] }.join(',') : ''
+        p['categories'] = v.has_key?('categories') ? v['categories'].map{ |i| i['category'] }.join(',') : ''
+        @video = Video.new(p)
+        @video.save
+
+        views = v['views'] || ''
+      end
+      return views
+    end
 end

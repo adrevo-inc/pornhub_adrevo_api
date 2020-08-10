@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   get 'scrape/get_video_list' => 'scrape#get_video_list'
   get 'scrape/get_video_keys' => 'scrape#get_video_keys'
+  get 'scrape/get_all_video_list' => 'scrape#get_all_video_list'
 
   get 'scrape/list_channels' => 'scrape#list_channels'
   get 'scrape/list_videos'   => 'scrape#list_videos'
