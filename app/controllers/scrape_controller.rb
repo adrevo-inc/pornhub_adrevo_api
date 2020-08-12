@@ -41,7 +41,7 @@ class ScrapeController < ApplicationController
     @channel.save
 
     respond_to do |format|
-      format.html
+      format.html 
       format.json { render json: @json_h }
     end
   end
@@ -64,7 +64,7 @@ class ScrapeController < ApplicationController
     logger.debug @json_h.inspect
 
     respond_to do |format|
-      format.html
+      format.html { render template: "scrape/list" }
       format.json { render json: @json_h }
     end
   end
@@ -81,7 +81,7 @@ class ScrapeController < ApplicationController
     end
 
     respond_to do |format|
-      format.html
+      format.html { render template: "scrape/list" }
       format.json { render json: @json_h }
     end
   end
@@ -103,7 +103,7 @@ class ScrapeController < ApplicationController
     end
 
     respond_to do |format|
-      format.html
+      format.html { render template: "scrape/list" }
       format.json { render json: @json_h }
     end
   end
