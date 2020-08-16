@@ -8,3 +8,4 @@
 /vendor/*
 /public/assets/*
 /config/secret.yml
+/config/gss_service_account.json

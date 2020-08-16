@@ -87,25 +87,32 @@ class ScrapeController < ApplicationController
   end
 
   def get_all_video_list
-    agent = Mechanize.new
-    login(agent)
-
-    @json_h = {}
-    params["channel"].split(?,).each do |c|
-      if c.present?
-        keys = fetch_video_keys(agent, c)
-        vdata = {}
-        keys.each do |k|
-          vdata[k] = fetch_video_data(agent, k)
-        end
-        @json_h[c] = vdata
-      end
-    end
+    @json_h = _get_all_video_list(params["channel"].split(?,).each)
 
     respond_to do |format|
       format.html { render template: "scrape/list" }
       format.json { render json: @json_h }
     end
+  end
+
+  # task呼び出しのため処理を分ける
+  def _get_all_video_list(channel_enum)
+    agent = Mechanize.new
+    login(agent)
+
+    result = {}
+    channel_enum do |c|
+      if c.present?
+        @json_h[c] = _get_all_video_list(agent, c)
+        keys = fetch_video_keys(agent, channel).values.flatten() # premium, free混合
+        vdata = {}
+        keys.each do |k|
+          vdata[k] = fetch_video_data(agent, k)
+        end
+        result[c] = vdata
+      end
+    end
+    return result
   end
 
   def list_channels
@@ -155,14 +162,16 @@ class ScrapeController < ApplicationController
       p.permit(*columns)
     end
 
+    # TODO: create channel,vkey,premium/free mapping table
     def fetch_video_keys(agent, channel)
-      keys = []
+      keys = {'premium'=> [], 'free'=> []}
 
       url = "#{CONFIG['domain']}/channels/#{channel}/videos"
       while true do
         contents = get_contents(agent, url)
         contents.search("div[@class='widgetContainer']").search('li').each do |content|
-          keys = (keys << content.attribute("_vkey").value)
+          vtype = content.search("div[@class='premiumIcon cl tooltipTrig']")[0].present? ? 'premium' : 'free'
+          keys = (keys["#{vtype}"] << content.attribute("_vkey").value)
         end
 
         next_page = contents.search("link[@rel='next']").attribute('href')
