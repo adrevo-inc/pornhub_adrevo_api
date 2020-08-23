@@ -1,6 +1,6 @@
 class CreateChannels < ActiveRecord::Migration[6.0]
   def change
-    create_table :channels do |t|
+    create_table :channels, options:"DEFAULT CHARSET=utf8mb4" do |t|
       t.string  :channel
       t.string  :label
       t.integer :pre_num

@@ -1,6 +1,6 @@
 class CreateVideos < ActiveRecord::Migration[6.0]
   def change
-    create_table :videos do |t|
+    create_table :videos, options:"DEFAULT CHARSET=utf8mb4" do |t|
       t.string    :video_id
       t.string    :title
       t.timestamp :publish_date
