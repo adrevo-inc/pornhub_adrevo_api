@@ -3,12 +3,12 @@
 ## Setup
 
 ```
-$ git pull
-$ bundle install
-$ mv [your secret file] config/secret.yml
-$ mysql -uroot www < db/views/*.sql
-$ rake db:migrate
-$ rake unicorn:start
+git pull
+bundle install
+mv [your secret file] config/secret.yml
+mysql -uroot www < db/views/*.sql
+rake db:migrate
+rake unicorn:start
 ```
 
 ## Update
