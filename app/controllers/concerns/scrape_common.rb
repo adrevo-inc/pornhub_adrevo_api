@@ -77,23 +77,21 @@ module ScrapeCommon
 
       # get rank, c_sub (num of channel subscribers)
       contents = get_contents(agent, "#{CONFIG['domain']}/channels/#{channel}")
-      contents.search("div[@class='ranktext']").search('span').each do |content|
-        data["rank"] = content.content
-      end
-      data["c_sub"] = contents.search("div[@id='stats']").search('div')[2].content.split[0]
+      data["rank"] = contents.search("div[@class='ranktext']").search('span')[0].content.gsub(/,/,'')
+      data["c_sub"] = contents.search("div[@id='stats']").search('div')[2].content.split[0].gsub(/,/,'')
 
       # get pre_num (num of premium videos)
       contents = get_contents(agent, "#{CONFIG['domain']}/users/#{label}/videos/premium")
-      data["pre_num"] = contents.search("span[@class='totalSpan']")[0].content
+      data["pre_num"] = contents.search("span[@class='totalSpan']")[0].content.gsub(/,/,'')
 
       # get pub_num (num of public videos)
       contents = get_contents(agent, "#{CONFIG['domain']}/users/#{label}/videos/public")
       contents_search = contents.search("span[@class='totalSpan']")[0]
-      data["pub_num"] = contents_search.present? ? contents_search.content : 0
+      data["pub_num"] = contents_search.present? ? contents_search.content.gsub(/,/,'') : 0
 
       # get l_sub (num of label subscribers)
       contents = get_contents(agent, "#{CONFIG['domain']}/users/#{label}")
-      data["l_sub"] = contents.search("div[@class='bottomInfoContainer']").search("span[@class='number']")[0].content.strip
+      data["l_sub"] = contents.search("div[@class='bottomInfoContainer']").search("span[@class='number']")[0].content.strip.gsub(/,/,'')
 
       # get feature (num of featured videos, but actually this check only first page..)
       contents = get_contents(agent, "#{CONFIG['domain']}/video/manage?o=mv")
