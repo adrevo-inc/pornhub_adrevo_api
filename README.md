@@ -6,6 +6,7 @@
 git pull
 bundle install
 mv [your secret file] config/secret.yml
+mv [your gss service account] config/gss_service_account.json
 mysql -uroot www < db/views/*.sql
 rake db:migrate
 rake unicorn:start

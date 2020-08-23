@@ -1,6 +1,9 @@
 /.env
 /log/*
 /.bundle
+*.lock
+config/database.yml
+db/schema.rb
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
