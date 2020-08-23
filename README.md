@@ -1,17 +1,27 @@
 # AdRevo Pornhub API
 
-## 用途
-適当にrailsで処理したいとき用
+## Setup
 
-## 環境設定
-config/secret.ymlを読み込む
+```
+$ git pull
+$ bundle install
+$ mv [your secret file] config/secret.yml
+$ mysql -uroot www < db/views/*.sql
+$ rake db:migrate
+$ rake unicorn:start
+```
 
-## 実装物
+## Update
 
-#### /scrape
-スクレイピングする
+```
+# Apply app/controller change
+ps aux | grep unicorn # check master process no
+kill -9 [master process no]
+rake unicorn:start
 
-#### /etc
-htmlを公開する
-
+# Apply crontab change
+vim config/schedule.rb
+bundle exec whenever --update-crontab
+bundle exec whenever --clear # if you want to stop
+```
 

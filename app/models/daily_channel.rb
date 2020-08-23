@@ -1,0 +1,2 @@
+class DailyChannel < ApplicationRecord
+end
