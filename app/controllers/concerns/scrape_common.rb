@@ -25,7 +25,11 @@ module ScrapeCommon
 
   def get_contents(agent, url)
     sleep(1)
-    html = agent.get("#{url}").content.toutf8
+    begin
+      html = agent.get("#{url}").content.toutf8
+    rescue Mechanize::ResponseCodeError => e
+      html = ''
+    end
     return Nokogiri::HTML(html, nil, 'utf-8')
   end
 
