@@ -112,7 +112,12 @@ module ScrapeCommon
   def fetch_video_data(agent, key)
     views = ''
     contents = get_contents(agent, "#{CONFIG['domain']}/webmasters/video_by_id?id=#{key}")
-    json = JSON.parse(contents.content)
+    begin
+      json = JSON.parse(contents.content)
+    rescue JSON::ParserError => e
+      json = {}
+      puts("# Parser error in fetch_video_data - {vkey: #$key}")
+    end
 
     if json.has_key?('video')
       v = json['video']
