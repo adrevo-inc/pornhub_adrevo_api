@@ -1,4 +1,4 @@
-# AdRevo Pornhub API
+# AdRevo Ph API
 
 ## Setup
 
