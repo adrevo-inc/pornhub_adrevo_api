@@ -44,7 +44,7 @@ module ScrapeCommon
         contents = get_contents(agent, url)
         contents.search("div[@class='widgetContainer']").search('li').each do |content|
           vtype = content.search("i[@class='premiumIcon cl tooltipTrig']").empty? ? 'free' : 'premium'
-          vkey = content.attribute("_vkey").value
+          vkey = content.attribute("data-video-vkey").value
 
           cond = (fetch_vtype == 'all') || # premium, free混合
             (fetch_vtype == vtype && fetch_vtype == 'premium') ||
