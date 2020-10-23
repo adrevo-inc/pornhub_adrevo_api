@@ -3,6 +3,9 @@
 /.bundle
 *.lock
 config/database.yml
+config/schedule.rb
+config/initializers/exception_notification.rb
+config/unicorn.rb
 db/schema.rb
 
 # Ignore master key for decrypting credentials and more.
